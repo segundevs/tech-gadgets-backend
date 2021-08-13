@@ -20,8 +20,8 @@ router.put('/:id', async (req, res) => {
     }, {new: true});
 
     res.status(200).json(updatedUser);
-  } catch (err) {
-    res.status(500).json(err)
+  } catch (error) {
+    res.status(500).json(error)
   }
   }else{
     res.status(401).json('You can only update your own profile')
@@ -35,16 +35,24 @@ router.delete('/:id', async (req, res) => {
     try {
       await User.findByIdAndDelete(req.params.id);
       res.status(200).json("user has been deleted");
-    } catch (err) {
-      res.status(500).json(err);
+    } catch (error) {
+      res.status(500).json(error);
     }
   }else{
     res.status(401).json("You can only delete your entry")
   } 
 })
 
-//Get user
-  // router.get('/:id', async (req, res) => {
-    
-  // })
+// Get user
+  router.get('/:id', async (req, res) => {
+    try {
+      const user = await User.findById(req.params.id);
+      const {password, ...others} = user._doc;
+      res.status(200).json(others)
+    } catch (error) {
+      res.status(500).json(error)
+    }
+  })
+
+
 module.exports = router;
