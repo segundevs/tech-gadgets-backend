@@ -1,19 +1,24 @@
 const router = require('express').Router();
-const user = require('../models/User');
+// const User = require('../models/User');
 const Product = require('../models/Product');
 
 
 //Get a product
 router.get('/:id', async (req, res) => {
   try {
-    const product = Product.findById(req.params.id);
+    const product = await Product.findById(req.params.id);
     res.status(200).json(product);
   } catch (error) {
     res.status(500).json(error);
   }
 })
 
-//Create a product
+//Get all products
+// router.get('/', (req, res) => {
+
+// })
+
+//Upload a product
 router.post('/', async (req, res) => {
   const newProduct = new Product(req.body);
   try {
@@ -24,5 +29,49 @@ router.post('/', async (req, res) => {
   }
 })
 
+//Delete a product
+router.delete('/:id', async (req, res) => {
+    try {
+      const product = await Product.findById(req.params.id)
+
+      if(product.username === req.body.username){
+        try {
+          await product.delete();
+          res.status(200).json('Product successfully deleted');
+        } catch (error) {
+          res.status(500).json(error);
+        }
+      }else{
+        res.status(401).json('You are not authorized to delete this product');
+      }
+    } catch (error) {
+        res.status(500).json(error)
+    }
+})
+
+//Update a product
+router.put('/:id', async (req, res) => {
+    try {
+      const product = await Product.findById(req.params.id)
+
+      if(product.username === req.body.username){
+        try {
+          const updatedProduct = await Product.findByIdAndUpdate(req.params.id, {
+            $set: req.body,
+          },
+          {new: true}
+          );
+
+          res.status(200).json(updatedProduct);
+        } catch (error) {
+          res.status(500).json(error);
+        }
+      }else{
+        res.status(401).json('You are not authorized to delete this product');
+      }
+    } catch (error) {
+        res.status(500).json(error)
+    }
+})
 
 module.exports = router;
