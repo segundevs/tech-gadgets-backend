@@ -13,10 +13,24 @@ router.get('/:id', async (req, res) => {
   }
 })
 
-//Get all products
-// router.get('/', (req, res) => {
-
-// })
+// Get all products
+router.get('/', async (req, res) => {
+  const searchPrice = req.query.price;
+  const searchName = req.query.name;
+  try {
+    let products;
+    if(searchName){
+      products = await Product.find({name: searchName})
+    }else if(searchPrice){
+      products = await Product.find({price: searchPrice})
+    }else{
+      products = await Product.find()
+    }
+    res.status(200).json(products);
+  } catch (error) {
+    res.status(500).json(error)
+  }
+})
 
 //Upload a product
 router.post('/', async (req, res) => {
