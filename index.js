@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
@@ -8,8 +9,13 @@ const userRoute = require('./routes/users');
 const productRoute = require('./routes/products');
 
 dotenv.config();
-app.use(express.json());
 
+//Middlewares
+app.use(express.json());
+app.use(cors());
+
+
+//MongoDB connection
 mongoose.connect(process.env.MONGO_URL, {
   useNewUrlParser: true, 
   useUnifiedTopology: true,
@@ -17,6 +23,8 @@ mongoose.connect(process.env.MONGO_URL, {
 }).then(console.log('connected to mongo db'))
   .catch((err)=>console.log(err));
 
+
+//Image upload/storage with multer
 const storage = multer.diskStorage({
   destination: (req, file, cb)=>{
     cb(null, "images")
@@ -32,12 +40,14 @@ app.post('/api/upload', upload.single("file"), (req, res) => {
   res.status(200).json('File successfully uploaded')
 })
 
+
+//API endpoints
 app.use('/api/auth', authRoute);
 app.use('/api/users', userRoute);
 app.use('/api/products', productRoute);
 
 
-
+//Port listerner
 app.listen('5000', ()=>{
   console.log('Backend is running....')
 })
