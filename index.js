@@ -14,6 +14,7 @@ dotenv.config();
 app.use(express.json());
 app.use(cors());
 
+const PORT = process.env.PORT || 5000
 
 //MongoDB connection
 mongoose.connect(process.env.MONGO_URL, {
@@ -48,8 +49,7 @@ app.use('/api/products', productRoute);
 
 
 //Port listerner
-const PORT = process.env.PORT || 5000
 app.listen(PORT, ()=>{
-  console.log(`Backend is running on ${PORT}`)
+  console.log('Backend is running....')
 })
 
