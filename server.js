@@ -48,7 +48,7 @@ app.use('/api/products', productRoute);
 
 
 //Port listerner
-app.listen('https://devices-tech.herokuapp.com/' || '5000', ()=>{
+app.listen('5000', ()=>{
   console.log('Backend is running....')
 })
 
